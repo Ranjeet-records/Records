@@ -4,6 +4,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Code-to-Link Redirect</title>
+
+
+
+    <script>
+        // Codes and corresponding links
+        const codes = {
+            "125": "https://ranjeet-records.github.io/Records/NAVALRAY.html",
+            "DISCOUNT50": "https://www.example.com/discount",
+            "NEWUSER2025": "https://www.example.com/welcome"
+        };
+
+        // Get elements
+        const codeInput = document.getElementById("codeInput");
+        const errorMessage = document.getElementById("errorMessage");
+        const successIcon = document.getElementById("successIcon");
+        
+        // Add input event listener for real-time validation
+        codeInput.addEventListener("input", function() {
+            const userInput = this.value.trim().toUpperCase();
+            
+            if (codes[userInput]) {
+                successIcon.style.display = "block";
+                errorMessage.style.display = "none";
+            } else {
+                successIcon.style.display = "none";
+            }
+        });
+
+        // Function to handle the code input and redirection
+        function checkCode() {
+            const userInput = codeInput.value.trim().toUpperCase();
+            
+            // Check if the entered code exists in the codes object
+            if (codes[userInput]) {
+                // Add a small delay for better UX
+                setTimeout(() => {
+                    window.location.href = codes[userInput]; // Redirect to the corresponding link
+                }, 300);
+            } else {
+                errorMessage.style.display = "block"; // Show error message if the code is invalid
+                
+                // Add shake animation
+                errorMessage.classList.remove("shake");
+                setTimeout(() => {
+                    errorMessage.classList.add("shake");
+                }, 10);
+            }
+        }
+
+        // Allow Enter key to submit
+        codeInput.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                checkCode();
+            }
+        });
+        
+        // Focus the input field when page loads
+        window.onload = function() {
+            codeInput.focus();
+        };
+    </script>
+
+
+
+    
     <style>
         * {
             box-sizing: border-box;
@@ -162,63 +227,6 @@
         <button onclick="checkCode()">Unlock Access</button>
         <div class="error-message" id="errorMessage">Invalid code. Please try again!</div>
     </div>
-    <script>
-        // Codes and corresponding links
-        const codes = {
-            "125": "https://www.example.com/reward1",
-            "DISCOUNT50": "https://www.example.com/discount",
-            "NEWUSER2025": "https://www.example.com/welcome"
-        };
 
-        // Get elements
-        const codeInput = document.getElementById("codeInput");
-        const errorMessage = document.getElementById("errorMessage");
-        const successIcon = document.getElementById("successIcon");
-        
-        // Add input event listener for real-time validation
-        codeInput.addEventListener("input", function() {
-            const userInput = this.value.trim().toUpperCase();
-            
-            if (codes[userInput]) {
-                successIcon.style.display = "block";
-                errorMessage.style.display = "none";
-            } else {
-                successIcon.style.display = "none";
-            }
-        });
-
-        // Function to handle the code input and redirection
-        function checkCode() {
-            const userInput = codeInput.value.trim().toUpperCase();
-            
-            // Check if the entered code exists in the codes object
-            if (codes[userInput]) {
-                // Add a small delay for better UX
-                setTimeout(() => {
-                    window.location.href = codes[userInput]; // Redirect to the corresponding link
-                }, 300);
-            } else {
-                errorMessage.style.display = "block"; // Show error message if the code is invalid
-                
-                // Add shake animation
-                errorMessage.classList.remove("shake");
-                setTimeout(() => {
-                    errorMessage.classList.add("shake");
-                }, 10);
-            }
-        }
-
-        // Allow Enter key to submit
-        codeInput.addEventListener("keypress", function(event) {
-            if (event.key === "Enter") {
-                checkCode();
-            }
-        });
-        
-        // Focus the input field when page loads
-        window.onload = function() {
-            codeInput.focus();
-        };
-    </script>
 </body>
 </html>
