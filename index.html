@@ -1,264 +1,150 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Code-to-Link Redirect</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #6e8efb, #a777e3);
-            color: #333;
-            padding: 20px;
-        }
-        
-        .container {
-            text-align: center;
-            padding: 2rem;
-            border-radius: 16px;
-            background-color: rgba(255, 255, 255, 0.9);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(10px);
-            width: 100%;
-            max-width: 400px;
-        }
-        
-        h1 {
-            margin-bottom: 1.5rem;
-            font-weight: 600;
-            color: #3a3a3a;
-            font-size: clamp(1.5rem, 5vw, 2rem);
-            line-height: 1.2;
-        }
-        
-        .input-group {
-            position: relative;
-            margin-bottom: 1.5rem;
-            width: 100%;
-        }
-        
-        input {
-            padding: 0.9rem 1.2rem;
-            font-size: 1rem;
-            width: 100%;
-            border-radius: 50px;
-            border: none;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            background-color: white;
-            transition: all 0.3s ease;
-        }
-        
-        input:focus {
-            outline: none;
-            box-shadow: 0 4px 15px rgba(110, 142, 251, 0.4);
-        }
-        
-        button {
-            padding: 0.9rem 1.8rem;
-            font-size: 1rem;
-            background: linear-gradient(135deg, #6e8efb, #a777e3);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            width: 100%;
-            max-width: 200px;
-        }
-        
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(110, 142, 251, 0.5);
-        }
-        
-        button:active {
-            transform: translateY(1px);
-        }
-        
-        .error-message {
-            color: #ff5555;
-            font-size: 0.9rem;
-            margin-top: 1rem;
-            display: none;
-        }
-        
-        .shake {
-            animation: shake 0.5s;
-        }
-        
-        @keyframes shake {
-            0%, 100% {transform: translateX(0);}
-            20%, 60% {transform: translateX(-5px);}
-            40%, 80% {transform: translateX(5px);}
-        }
-        
-        .success-icon {
-            display: none;
-            color: #4CAF50;
-            font-size: 1.2rem;
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-        
-        /* Media Queries for better responsiveness */
-        @media (max-width: 480px) {
-            .container {
-                padding: 1.5rem;
-            }
-            
-            input {
-                padding: 0.8rem 1rem;
-            }
-            
-            button {
-                padding: 0.8rem 1.5rem;
-            }
-        }
-        
-        @media (max-width: 320px) {
-            .container {
-                padding: 1.2rem;
-            }
-            
-            h1 {
-                font-size: 1.3rem;
-                margin-bottom: 1.2rem;
-            }
-            
-            input {
-                padding: 0.7rem 0.9rem;
-                font-size: 0.9rem;
-            }
-            
-            button {
-                padding: 0.7rem 1.4rem;
-                font-size: 0.9rem;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>iframe Converter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-family: monospace;
+      resize: vertical;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .result {
+      margin-top: 20px;
+    }
+    h1, h2 {
+      color: #333;
+    }
+    .preview {
+      border: 1px solid #ddd;
+      padding: 15px;
+      margin-top: 10px;
+      border-radius: 4px;
+      background-color: #f9f9f9;
+    }
+    .preview-container {
+      height: 300px;
+      overflow: hidden;
+      margin-top: 20px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Enter Your Code</h1>
-        <div class="input-group">
-            <input type="text" id="codeInput" placeholder="Enter your access code" autocomplete="off">
-            <span class="success-icon" id="successIcon">✓</span>
-        </div>
-        <button onclick="checkCode()">Unlock Access</button>
-        <div class="error-message" id="errorMessage">Invalid code. Please try again!</div>
+  <div class="container">
+    <h1>Responsive iframe Converter</h1>
+    <p>Paste your iframe code below and convert it to a responsive wrapper.</p>
+    
+    <div>
+      <h2>Input</h2>
+      <textarea id="input-code" placeholder="Paste your iframe code here..."></textarea>
     </div>
-
-
-
-
-
-
-
-
-
-
-
     
-    <script>
-        // Codes and corresponding links
-        const codes = {
-            "125": "https://ranjeet-records.github.io/Records/NAVALRAY.html",
-            "000": "https://ranjeet-records.github.io/Records/SangitaMandal.html",
-            "NEWUSER2025": "https://www.example.com/welcome"
-        };
-
-        // Get elements
-        const codeInput = document.getElementById("codeInput");
-        const errorMessage = document.getElementById("errorMessage");
-        const successIcon = document.getElementById("successIcon");
-        
-        // Add input event listener for real-time validation
-        codeInput.addEventListener("input", function() {
-            const userInput = this.value.trim().toUpperCase();
-            
-            if (codes[userInput]) {
-                successIcon.style.display = "block";
-                errorMessage.style.display = "none";
-            } else {
-                successIcon.style.display = "none";
-            }
-        });
-
-        // Function to handle the code input and redirection
-        function checkCode() {
-            const userInput = codeInput.value.trim().toUpperCase();
-            
-            // Check if the entered code exists in the codes object
-            if (codes[userInput]) {
-                // Add a small delay for better UX
-                setTimeout(() => {
-                    window.location.href = codes[userInput]; // Redirect to the corresponding link
-                }, 300);
-            } else {
-                errorMessage.style.display = "block"; // Show error message if the code is invalid
-                
-                // Add shake animation
-                errorMessage.classList.remove("shake");
-                setTimeout(() => {
-                    errorMessage.classList.add("shake");
-                }, 10);
-            }
-        }
-
-        // Allow Enter key to submit
-        codeInput.addEventListener("keypress", function(event) {
-            if (event.key === "Enter") {
-                checkCode();
-            }
-        });
-        
-        // Focus the input field when page loads
-        window.onload = function() {
-            codeInput.focus();
-        };
-    </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    <button id="convert-btn">Convert</button>
     
+    <div class="result">
+      <h2>Output</h2>
+      <textarea id="output-code" readonly></textarea>
+    </div>
+    
+    <div>
+      <h2>Preview</h2>
+      <div id="preview" class="preview"></div>
+    </div>
+    
+    <div class="preview-container">
+      <iframe id="preview-frame" style="width:100%; height:100%; border:none;"></iframe>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('convert-btn').addEventListener('click', function() {
+      const inputCode = document.getElementById('input-code').value.trim();
+      
+      // Extract the src URL from the input iframe
+      const srcMatch = inputCode.match(/src="([^"]+)"/);
+      
+      if (!srcMatch) {
+        alert('Could not find src attribute in the iframe code.');
+        return;
+      }
+      
+      const srcUrl = srcMatch[1];
+      
+      // Create the responsive HTML
+      const responsiveHTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Responsive Page</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+    .responsive {
+      width: 100%;
+      height: 100vh; /* Full viewport height */
+      border: none;
+    }
+  </style>
+</head>
+<body>
+ 
+  <iframe class="responsive" src="${srcUrl}"></iframe>
+</body>
+</html>`;
+      
+      // Set the output
+      document.getElementById('output-code').value = responsiveHTML;
+      
+      // Update preview
+      document.getElementById('preview').textContent = responsiveHTML;
+      
+      // Create a data URL for the preview iframe
+      const blob = new Blob([responsiveHTML], { type: 'text/html' });
+      const dataUrl = URL.createObjectURL(blob);
+      document.getElementById('preview-frame').src = dataUrl;
+    });
+    
+    // Set example input
+    document.getElementById('input-code').value = '<iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRZOKqWZkNRwkDyLG37mBoBRwv_2PuVSZb4p751u_nXhbwWCgI3rTF_S6v1gFd9vPZhZ0iGuhvMG8qW/pubhtml?widget=true&amp;headers=false"></iframe>';
+  </script>
 </body>
 </html>
